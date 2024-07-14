@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script type="text/javascript">
+        window.tailwind.config = {
+            darkMode: ['class'],
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))'
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))'
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))'
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))'
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))'
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))'
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))'
+                        },
+                    },
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 min-h-screen p-4">
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center space-x-2">
+                <img src="https://placehold.co/32x32" alt="Public Library Logo" class="w-8 h-8">
+                <h1 class="text-2xl font-bold">Public Library</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="relative">
+                    <img src="https://placehold.co/24x24?text=🔔" alt="Notifications" class="w-6 h-6">
+                    <span class="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-400"></span>
+                </button>
+                <button class="bg-green-200 text-green-800 px-4 py-2 rounded-full"><a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Signout</a></button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold">Search Books</h2>
+                    <form action="{{ url_for('dashboard') }}" method="post" class="flex mt-2">
+                        <input type="text" name="isbn" placeholder="Enter ISBN" class="w-full p-2 border border-zinc-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-md">Search</button>
+                    </form>
+                </div>
+
+                {% if book %}
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold">Book Details</h3>
+                    <div class="border border-zinc-300 p-4 rounded-md">
+                        <h4 class="font-bold">{{ book.title }}</h4>
+                        <p><strong>Author:</strong> {{ book.author }}</p>
+                        <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+                        <p><strong>Year:</strong> {{ book.year }}</p>
+                        <p><strong>Genre:</strong> {{ book.genre }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if borrowed_books %}
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold">Borrowed Books</h3>
+                    <ul class="list-disc pl-5">
+                        {% for book in borrowed_books %}
+                        <li class="mb-2">
+                            <strong>Title:</strong> {{ book.title }}<br>
+                            <strong>Borrow Date:</strong> {{ book.borrow_date }}<br>
+                            {% if book.return_date %}
+                            <strong>Return Date:</strong> {{ book.return_date }}<br>
+                            {% else %}
+                            <strong>Return Date:</strong> Not returned yet<br>
+                            {% endif %}
+                            <strong>Late Fee:</strong> {{ book.late_fee or 0 }} rs
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="mt-4"><strong>Total Pending Amount:</strong> {{ pending_amount }} rs</p>
+                </div>
+                {% else %}
+                <p>No books borrowed yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="md:col-span-1">
+            <div>
+                <h2 class="text-xl font-bold mb-2">User Profile</h2>
+                <div class="border border-zinc-300 p-4 rounded-md">
+                    <div class="flex items-center mb-4">
+                        <img src="https://placehold.co/48x48" alt="User Avatar" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h3 class="font-bold">{{ user.username }}</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400">YourCompany</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                        <p>📍 {{ user.address }}</p>
+                        <p>{{ user.city }} {{ user.state }} {{ user.zip }}</p>
+                        <p>{{ user.country }}</p>
+                        <p>📞 {{ user.phone }}</p>
+                        <p>✉️ {{ user.email }}</p>
+                    </div>
+                    <button class="text-blue-500 hover:underline mb-4">Edit information</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

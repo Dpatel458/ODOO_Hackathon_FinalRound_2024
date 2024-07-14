@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Borrow Book</h2>
+<form action="{{ url_for('borrow_book') }}" method="post" id="borrowForm">
+    <label for="user_id">User ID:</label>
+    <input type="text" id="user_id" name="user_id" required>
+    <label for="isbn">ISBN:</label>
+    <input type="text" id="isbn" name="isbn" required>
+    <button type="submit">Borrow Book</button>
+</form>
+
+{% if message %}
+<div class="alert">{{ message }}</div>
+{% endif %}
+
+<script>
+document.getElementById('borrowForm').onsubmit = function(event) {
+    const userId = document.getElementById('user_id').value;
+    const isbn = document.getElementById('isbn').value;
+
+    // Simple validation
+    if (!userId || !isbn) {
+        alert("Please fill out both fields.");
+        event.preventDefault(); // Prevent form submission
+        return;
+    }
+
+    // Add further validation if needed (e.g., format checks)
+};
+</script>
+{% endblock %}

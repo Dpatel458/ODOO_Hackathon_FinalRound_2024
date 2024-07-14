@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>View </h2>
+<table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+        <tr>
+            <th>ISBN</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Publisher</th>
+            <th>Year</th>
+            <th>Genre</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for books in bookss %}
+        <tr>
+            <td>{{ books.isbn }}</td>
+            <td>{{ books.title }}</td>
+            <td>{{ books.author }}</td>
+            <td>{{ books.publisher }}</td>
+            <td>{{ books.year }}</td>
+            <td>{{ books.genre }}</td>
+            <td>{{ books.quantity }}</td>
+            <td>
+                <a href="{{ url_for('edit_books', isbn=books.isbn) }}">Edit</a>
+                <a href="{{ url_for('delete_books', isbn=books.isbn) }}" onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

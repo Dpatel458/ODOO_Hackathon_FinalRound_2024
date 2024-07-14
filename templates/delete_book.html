@@ -1,0 +1,39 @@
+@app.route('/edit_book/<isbn>', methods=['GET', 'POST'])
+    def edit_book(isbn):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        if request.method == 'POST':
+            title = request.form['title']
+            author = request.form['author']
+            publisher = request.form['publisher']
+            year = request.form['year']
+            genre = request.form['genre']
+            quantity = request.form['quantity']
+            
+            cursor.execute('UPDATE books SET title = %s, author = %s, publisher = %s, year = %s, genre = %s, quantity = %s WHERE isbn = %s',
+                           (title, author, publisher, year, genre, quantity, isbn))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('Book updated successfully')
+            return redirect(url_for('view_books'))
+        
+        cursor.execute('SELECT * FROM books WHERE isbn = %s', (isbn,))
+        book = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
+        return render_template('edit_book.html', book=book)
+    
+    @app.route('/delete_book/<isbn>', methods=['POST'])
+    def delete_book(isbn):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM books WHERE isbn = %s', (isbn,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash('Book deleted successfully')
+        return redirect(url_for('view_books'))
+    

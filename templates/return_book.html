@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Return Book</h2>
+<form action="{{ url_for('return_book') }}" method="post">
+    <label for="user_id">User ID:</label>
+    <input type="text" id="user_id" name="user_id" required>
+    <label for="isbn">ISBN:</label>
+    <input type="text" id="isbn" name="isbn" required>
+    <button type="submit">Return Book</button>
+</form>
+{% endblock %}
